@@ -11,6 +11,7 @@ MealViewer to Nutrislice, and the two use completely different APIs.
 | --- | --- |
 | `dakboard-nutrislice-widget.html` | Paste into a DakBoard **Widget Block** |
 | `nutrislice-proxy-worker.js` | Optional Cloudflare Worker, only if you hit a CORS error |
+| `sample-response.json` | A real day's response, trimmed to the fields the widget reads |
 
 ## Setup
 
@@ -94,7 +95,8 @@ one first instead of re-failing through the dead options every time.
 | `SHOW_DATE` | `true` | Second heading line with the date being shown |
 | `DATE_STYLE` | `long` | `long` → Tuesday, August 18; `short` → Tue, Aug 18 |
 | `DEBUG_MODE` | `false` | `"items"` lists every row with the fields that decide whether it shows; `true` dumps raw JSON. On failure, either shows every URL tried |
-| `SKIP_CATEGORIES` | milk, condiments | Food categories to hide. `[]` shows everything |
+| `SKIP_CATEGORIES` | milk, condiment, beverage | Food categories to hide. `[]` shows everything |
+| `SKIP_UNCATEGORIZED` | `true` | Hide rows with no food category — districts use these as in-list station labels |
 | `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
 **Stuck on "Loading menu…"?** That means the script stopped before it could
@@ -131,3 +133,8 @@ showing a different day's food.
   and uses `display_name` as the label when the district sets one.
 - **Categories instead of item types.** Filtering keys off the food's category
   (`entree`, `milk`, …) rather than MealViewer's `item_Type`.
+- **Station labels hiding as food.** Beyond the flagged station headings,
+  districts also put labels like `T4- Grill Baskets` in as ordinary food
+  entries. Nothing marks them as headings — the only thing separating them from
+  real food is that their category is empty, which is what `SKIP_UNCATEGORIZED`
+  keys off.

@@ -107,7 +107,15 @@
 
   // Food categories to hide (milk cartons, condiments, etc). Matched against
   // each item's food category, case-insensitive. Leave empty to show all.
-  var SKIP_CATEGORIES = ["milk", "condiments", "condiment"];
+  var SKIP_CATEGORIES = ["milk", "milks", "condiment", "condiments",
+                         "beverage", "beverages"];
+
+  // Hide rows that carry no food category at all. Districts use these as
+  // in-list station labels ("T4- Grill Baskets", "Fast Takes - Grab & Go
+  // Meals") -- they arrive as ordinary food entries, so nothing else marks
+  // them as headings. Real menu items are categorised. Set false if your
+  // district leaves the category blank on food you actually want listed.
+  var SKIP_UNCATEGORIZED = true;
 
   // Station headings ("Deli", "Main Line", ...).
   //   "auto"   - follow the district's own setting, like the Nutrislice site does
@@ -352,7 +360,7 @@
 
   function isHidden(item) {
     var cat = categoryOf(item);
-    if (!cat) return false;
+    if (!cat) return SKIP_UNCATEGORIZED;
     for (var i = 0; i < SKIP_CATEGORIES.length; i++) {
       if (SKIP_CATEGORIES[i].toLowerCase() === cat) return true;
     }
@@ -428,7 +436,9 @@
       if (item.is_section_title) flags.push("section_title");
       if (item.is_station_header) flags.push("station_header");
       if (item.blank_line) flags.push("blank_line");
-      if (isHidden(item)) flags.push("HIDDEN-by-category");
+      if (isHidden(item)) {
+        flags.push(categoryOf(item) ? "HIDDEN-by-category" : "HIDDEN-no-category");
+      }
 
       rows += '<div style="margin-bottom:4px;">' +
         escapeHtml((food.name || item.text || "(no name)")) +

@@ -1,0 +1,296 @@
+{
+ "start_date": "2026-08-17",
+ "menu_type_id": 27124,
+ "days": [
+  {
+   "date": "2026-08-17",
+   "menu_info": {},
+   "menu_items": []
+  },
+  {
+   "date": "2026-08-18",
+   "menu_info": {
+    "373083": {
+     "position": 0,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false,
+      "section_title_can_expand_collapse": true
+     }
+    },
+    "374701": {
+     "position": 1,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false,
+      "section_title_can_expand_collapse": true
+     }
+    },
+    "373617": {
+     "position": 2,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false,
+      "section_title_can_expand_collapse": true
+     }
+    },
+    "374216": {
+     "position": 3,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false,
+      "section_title_can_expand_collapse": true
+     }
+    },
+    "375111": {
+     "position": 4,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false,
+      "section_title_can_expand_collapse": true
+     }
+    }
+   },
+   "menu_items": [
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Adventure",
+     "food": null,
+     "category": "",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Popcorn Chicken",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fried Rice",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fajita Chicken",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chicken Nugget Chunks",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Sesame Carrots",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Broccoli",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Teriyaki Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Sweet and Sour Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "General Tso Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Favorites",
+     "food": null,
+     "category": "",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Philly Cheese Steak Sub",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Crinkle Cut Sweet Potato Fries",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Peppers and Onions Blend",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Grill",
+     "food": null,
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Grill Baskets",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Hamburger Bun",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Fast Takes",
+     "food": null,
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fast Takes - Grab & Go Meals",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Extras Bar",
+     "food": null,
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Garden Bar",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chocolate Skim Milk",
+      "food_category": "beverage"
+     },
+     "category": "beverage",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Milk",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    }
+   ]
+  }
+ ]
+}
