@@ -1,8 +1,13 @@
 {
- "_comment": "Elkhorn High School lunch, trimmed by hand to the fields the widget reads. Stations and item names taken from the Nutrislice site; nutrition, ingredients and icons removed.",
+ "_comment": "Real Elkhorn High School lunch response (week of 2026-08-17), trimmed to the fields the widget reads. Nutrition, ingredients and icons removed; names, categories, stations and menu_info are verbatim.",
  "start_date": "2026-08-17",
  "menu_type_id": 27124,
  "days": [
+  {
+   "date": "2026-08-16",
+   "menu_info": {},
+   "menu_items": []
+  },
   {
    "date": "2026-08-17",
    "menu_info": {},
@@ -15,40 +20,42 @@
      "position": 0,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "374701": {
      "position": 1,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "373617": {
      "position": 2,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "374216": {
      "position": 3,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "375111": {
      "position": 4,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
+     }
+    },
+    "435739": {
+     "position": 5,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
      }
     }
    },
@@ -300,48 +307,49 @@
      "position": 0,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "374701": {
      "position": 1,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "373617": {
      "position": 2,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
-    "999001": {
+    "380038": {
      "position": 3,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "374216": {
      "position": 4,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
      }
     },
     "375111": {
      "position": 5,
      "section_options": {
       "display_name": null,
-      "use_section_title": false,
-      "section_title_can_expand_collapse": true
+      "use_section_title": false
+     }
+    },
+    "435739": {
+     "position": 6,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
      }
     }
    },
@@ -467,9 +475,9 @@
      "text": "",
      "food": {
       "name": "French Toast Sticks",
-      "food_category": "grain"
+      "food_category": "entree"
      },
-     "category": "grain",
+     "category": "entree",
      "menu_id": 374701
     },
     {
@@ -563,7 +571,7 @@
      "text": "T4-Pizza",
      "food": null,
      "category": "",
-     "menu_id": 999001
+     "menu_id": 380038
     },
     {
      "is_section_title": false,
@@ -574,7 +582,7 @@
       "food_category": "entree"
      },
      "category": "entree",
-     "menu_id": 999001
+     "menu_id": 380038
     },
     {
      "is_section_title": false,
@@ -585,7 +593,7 @@
       "food_category": ""
      },
      "category": "",
-     "menu_id": 999001
+     "menu_id": 380038
     },
     {
      "is_section_title": false,
@@ -596,7 +604,7 @@
       "food_category": ""
      },
      "category": "",
-     "menu_id": 999001
+     "menu_id": 380038
     },
     {
      "is_section_title": false,
@@ -607,7 +615,7 @@
       "food_category": "condiment"
      },
      "category": "condiment",
-     "menu_id": 999001
+     "menu_id": 380038
     },
     {
      "is_section_title": true,
@@ -681,6 +689,764 @@
      "menu_id": 375111
     }
    ]
+  },
+  {
+   "date": "2026-08-20",
+   "menu_info": {
+    "373083": {
+     "position": 0,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374701": {
+     "position": 1,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "373617": {
+     "position": 2,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "380038": {
+     "position": 3,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374216": {
+     "position": 4,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "375111": {
+     "position": 5,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "435739": {
+     "position": 6,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    }
+   },
+   "menu_items": [
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Adventure",
+     "food": null,
+     "category": "",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Popcorn Chicken",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fried Rice",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fajita Chicken",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chicken Nugget Chunks",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Sesame Carrots",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Broccoli",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Teriyaki Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Sweet and Sour Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "General Tso Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Favorites",
+     "food": null,
+     "category": "",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Popcorn Chicken Bowl",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Dinner Roll",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Grill",
+     "food": null,
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Grill Baskets",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Hamburger Bun",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Pizza",
+     "food": null,
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fresh Made Pizza",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Mozzarella Stuffed Breadsticks",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Pizza Sides and Toppings",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Marinara Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Fast Takes",
+     "food": null,
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fast Takes - Grab & Go Meals",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Extras Bar",
+     "food": null,
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Garden Bar",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Sliced Strawberries",
+      "food_category": "fruit"
+     },
+     "category": "fruit",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Milk",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chocolate Skim Milk",
+      "food_category": "beverage"
+     },
+     "category": "beverage",
+     "menu_id": 375111
+    }
+   ]
+  },
+  {
+   "date": "2026-08-21",
+   "menu_info": {
+    "373083": {
+     "position": 0,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374701": {
+     "position": 1,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "373617": {
+     "position": 2,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "380038": {
+     "position": 3,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374216": {
+     "position": 4,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "375111": {
+     "position": 5,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "435739": {
+     "position": 6,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    }
+   },
+   "menu_items": [
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Adventure",
+     "food": null,
+     "category": "",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Popcorn Chicken",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Steamed Brown Rice",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fried Rice",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fajita Chicken",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chicken Nugget Chunks",
+      "food_category": "meat"
+     },
+     "category": "meat",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Sesame Carrots",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Broccoli",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Teriyaki Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Sweet and Sour Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "General Tso Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 373083
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Favorites",
+     "food": null,
+     "category": "",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Scratch Beef Lasagna",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Breadstick",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Roasted Broccoli",
+      "food_category": "vegetable"
+     },
+     "category": "vegetable",
+     "menu_id": 374701
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Grill",
+     "food": null,
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Grill Baskets",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Hamburger Bun",
+      "food_category": "grain"
+     },
+     "category": "grain",
+     "menu_id": 373617
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Pizza",
+     "food": null,
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Mozzarella Stuffed Breadsticks",
+      "food_category": "entree"
+     },
+     "category": "entree",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fresh Made Pizza",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Pizza Sides and Toppings",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Marinara Sauce",
+      "food_category": "condiment"
+     },
+     "category": "condiment",
+     "menu_id": 380038
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Fast Takes",
+     "food": null,
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Fast Takes - Grab & Go Meals",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 374216
+    },
+    {
+     "is_section_title": true,
+     "is_station_header": true,
+     "text": "T4-Extras Bar",
+     "food": null,
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "T4- Garden Bar",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Milk",
+      "food_category": ""
+     },
+     "category": "",
+     "menu_id": 375111
+    },
+    {
+     "is_section_title": false,
+     "is_station_header": false,
+     "text": "",
+     "food": {
+      "name": "Chocolate Skim Milk",
+      "food_category": "beverage"
+     },
+     "category": "beverage",
+     "menu_id": 375111
+    }
+   ]
+  },
+  {
+   "date": "2026-08-22",
+   "menu_info": {
+    "373083": {
+     "position": 0,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374701": {
+     "position": 1,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "373617": {
+     "position": 2,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "380038": {
+     "position": 3,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "374216": {
+     "position": 4,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "375111": {
+     "position": 5,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    },
+    "435739": {
+     "position": 6,
+     "section_options": {
+      "display_name": null,
+      "use_section_title": false
+     }
+    }
+   },
+   "menu_items": []
   }
  ]
 }

@@ -11,7 +11,7 @@ MealViewer to Nutrislice, and the two use completely different APIs.
 | --- | --- |
 | `dakboard-nutrislice-widget.html` | Paste into a DakBoard **Widget Block** |
 | `nutrislice-proxy-worker.js` | Optional Cloudflare Worker, only if you hit a CORS error |
-| `sample-response.json` | A real day's response, trimmed to the fields the widget reads |
+| `sample-response.json` | A real week's response, trimmed to the fields the widget reads |
 
 ## Setup
 
