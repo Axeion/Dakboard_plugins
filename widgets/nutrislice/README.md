@@ -43,8 +43,24 @@ https://<DISTRICT>.nutrislice.com/menu/api/schools/?format=json
 
 ### 3. If the menu never loads
 
-Open the browser console. A **CORS error** means Nutrislice refused the direct
-browser request. Deploy the companion Worker:
+The widget tries both Nutrislice host forms (`<district>.nutrislice.com` and
+`<district>.api.nutrislice.com`) before giving up, then tells you which kind of
+failure it hit. Turn on `DEBUG_MODE` to see every URL it tried and the result
+of each:
+
+- **"Could not reach Nutrislice (CORS block or no network)"** — the request never
+  completed, so there was no response to read. Deploy the Worker (below).
+- **"Menu not found (HTTP 404)"** — the connection worked, so CORS is fine and
+  the network is fine. `SCHOOL_SLUG` or `MENU_TYPE` doesn't match. Recheck them
+  against your menu URL.
+
+**Quickest way to tell them apart:** copy one of the URLs the debug view prints
+and open it in a normal browser tab.
+
+- Returns JSON → the endpoint is correct and it's a CORS block. Deploy the Worker.
+- Returns a 404 or error page → your slug or menu type is wrong.
+
+To deploy the proxy Worker:
 
 1. Sign up at [workers.cloudflare.com](https://workers.cloudflare.com) (free tier is plenty).
 2. Create a Worker, paste in `nutrislice-proxy-worker.js`, deploy.
@@ -62,7 +78,7 @@ The Worker only forwards requests to `*.nutrislice.com`, so it isn't an open pro
 | `PROXY_URL` | `""` | Worker URL; blank means call Nutrislice directly |
 | `ROLL_OVER_HOUR` | `14` | After this hour (24h), show *tomorrow's* menu. `null` = always today |
 | `DATE_OVERRIDE` | `""` | Pin to one date (`YYYY-MM-DD`) while setting up |
-| `DEBUG_MODE` | `false` | Dump the raw API response on screen |
+| `DEBUG_MODE` | `false` | Dump the raw API response — or, on failure, every URL tried and why each failed |
 | `SKIP_CATEGORIES` | milk, condiments | Food categories to hide. `[]` shows everything |
 
 **Setting up? Turn on `DEBUG_MODE` first.** It prints the raw response, which is
