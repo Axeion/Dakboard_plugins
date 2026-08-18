@@ -1,0 +1,224 @@
+<!--
+  DakBoard Widget Block: Nutrislice School Lunch Menu
+  ===================================================
+  HOW TO USE:
+  1. On your DakBoard Custom Screen, click "Add a Block" -> "Widget Block".
+  2. Paste this entire file's contents into the widget's code/settings box.
+  3. Edit the CONFIG section below (DISTRICT / SCHOOL_SLUG / MENU_TYPE).
+  4. Resize the block on your DakBoard layout as needed.
+
+  FINDING YOUR SETTINGS:
+  Open your school's menu on the Nutrislice website and read them off the URL:
+
+      https://elkhornweb.nutrislice.com/menu/elkhorn-high-school/lunch/2026-08-19
+             ^^^^^^^^^^                ^^^^^^^^^^^^^^^^^^^ ^^^^^
+             DISTRICT                  SCHOOL_SLUG         MENU_TYPE
+
+  MENU_TYPE is whatever your district named that menu, so it is not always
+  "lunch" -- districts use things like "hs-lunch", "lunch-2" or "secondary-lunch".
+  Always copy it from the URL rather than guessing. If you cannot find your
+  school's page, https://<DISTRICT>.nutrislice.com/menu/api/schools/?format=json
+  lists every school in the district along with its slug.
+
+  IF THE MENU NEVER LOADS:
+  Open the browser console. A CORS error means Nutrislice refused the direct
+  browser request -- deploy the companion Cloudflare Worker
+  (nutrislice-proxy-worker.js) and paste its URL into PROXY_URL below.
+
+  TIP: set DEBUG_MODE = true to print the raw API response on screen. That is
+  the fastest way to confirm your DISTRICT / SCHOOL_SLUG / MENU_TYPE are right
+  and to see what food categories your district uses.
+-->
+
+<div id="ns-widget" style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #fff; width: 100%; height: 100%; box-sizing: border-box; padding: 12px;">
+  <div id="ns-title" style="font-size: 1.4em; font-weight: 600; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.85;">
+    Today's Lunch Menu
+  </div>
+  <div id="ns-content" style="font-size: 1.1em; line-height: 1.5;">
+    Loading menu…
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---------------- CONFIG ----------------
+  var DISTRICT    = "elkhornweb";          // <-- subdomain, e.g. "elkhornweb" in elkhornweb.nutrislice.com
+  var SCHOOL_SLUG = "elkhorn-high-school"; // <-- school segment of the menu URL
+  var MENU_TYPE   = "lunch";               // <-- menu segment of the menu URL
+  var PROXY_URL   = "";                    // <-- e.g. "https://nutrislice-proxy.yourname.workers.dev"
+
+  // Show tomorrow's menu once it is this hour or later (24h clock), so the
+  // board stops advertising a lunch that has already been served.
+  // Set to null to always show today.
+  var ROLL_OVER_HOUR = 14;
+
+  // Force a specific date while setting the widget up, e.g. "2026-08-19".
+  // Leave blank for normal operation.
+  var DATE_OVERRIDE = "";
+
+  // Set to true temporarily to see the raw JSON response on screen.
+  var DEBUG_MODE = false;
+
+  // Food categories to hide (milk cartons, condiments, etc). Matched against
+  // each item's food category, case-insensitive. Leave empty to show all.
+  var SKIP_CATEGORIES = ["milk", "condiments", "condiment"];
+  // -----------------------------------------
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+  function ymd(d) {
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+
+  // The date whose menu we want, as a local (not UTC) calendar date.
+  function targetDate() {
+    if (DATE_OVERRIDE) return DATE_OVERRIDE;
+    var d = new Date();
+    if (ROLL_OVER_HOUR !== null && d.getHours() >= ROLL_OVER_HOUR) {
+      d.setDate(d.getDate() + 1);
+    }
+    return ymd(d);
+  }
+
+  function buildUrl(dateStr) {
+    var parts = dateStr.split("-");
+    // Nutrislice serves a whole week at a time; any date in the week works.
+    var path = "/menu/api/weeks/school/" + encodeURIComponent(SCHOOL_SLUG) +
+               "/menu-type/" + encodeURIComponent(MENU_TYPE) +
+               "/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/?format=json";
+    var host = DISTRICT + ".nutrislice.com";
+
+    if (PROXY_URL) {
+      // Proxy forwards ?host= and ?path= to the real Nutrislice endpoint
+      return PROXY_URL.replace(/\/$/, "") +
+             "/?host=" + encodeURIComponent(host) +
+             "&path=" + encodeURIComponent(path);
+    }
+    return "https://" + host + path;
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function renderError(msg) {
+    document.getElementById("ns-content").innerHTML =
+      '<div style="opacity:0.7;">' + msg + '</div>';
+  }
+
+  // Nutrislice nests the category differently across districts, so check
+  // every spelling we have seen before deciding an item is hidden.
+  function categoryOf(item) {
+    var food = item.food || {};
+    return String(
+      food.food_category || food.category || item.food_category || item.category || ""
+    ).toLowerCase().trim();
+  }
+
+  function isHidden(item) {
+    var cat = categoryOf(item);
+    if (!cat) return false;
+    for (var i = 0; i < SKIP_CATEGORIES.length; i++) {
+      if (SKIP_CATEGORIES[i].toLowerCase() === cat) return true;
+    }
+    return false;
+  }
+
+  function nameOf(item) {
+    var food = item.food || {};
+    var name = food.name || item.text || "";
+    return String(name).trim();
+  }
+
+  function findDay(data, dateStr) {
+    var days = (data && data.days) || [];
+    for (var i = 0; i < days.length; i++) {
+      if (days[i] && days[i].date === dateStr) return days[i];
+    }
+    return null;
+  }
+
+  function renderMenu(data, dateStr) {
+    if (DEBUG_MODE) {
+      document.getElementById("ns-content").innerHTML =
+        '<pre style="white-space: pre-wrap; font-size: 0.55em; line-height:1.3; opacity:0.9;">' +
+        escapeHtml(JSON.stringify(data, null, 2)) + '</pre>';
+      console.log("Nutrislice raw response:", data);
+      return;
+    }
+
+    var day = findDay(data, dateStr);
+    if (!day) {
+      renderError("No menu scheduled for today.");
+      return;
+    }
+
+    var items = day.menu_items || [];
+    var html = "";
+    var sectionHtml = "";
+    var sectionTitle = "";
+    var seen = {};
+    var foundAnyItem = false;
+
+    function flushSection() {
+      if (!sectionHtml) { sectionTitle = ""; return; }
+      html += '<div style="margin-bottom: 12px;">';
+      if (sectionTitle) {
+        html += '<div style="font-weight:600; opacity:0.8; margin-bottom:4px;">' +
+                escapeHtml(sectionTitle) + '</div>';
+      }
+      html += '<ul style="margin:0; padding-left: 1.2em;">' + sectionHtml + '</ul></div>';
+      sectionHtml = "";
+      sectionTitle = "";
+    }
+
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i] || {};
+
+      // Section titles ("Main Line", "Deli", ...) carry no food, just text.
+      if (item.is_section_title) {
+        flushSection();
+        sectionTitle = String(item.text || "").trim();
+        continue;
+      }
+
+      if (isHidden(item)) continue;
+
+      var name = nameOf(item);
+      if (!name) continue;
+
+      // Districts often repeat the same item across stations.
+      var key = name.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+
+      sectionHtml += "<li>" + escapeHtml(name) + "</li>";
+      foundAnyItem = true;
+    }
+    flushSection();
+
+    document.getElementById("ns-content").innerHTML = foundAnyItem
+      ? html
+      : "No items listed today.";
+  }
+
+  function loadMenu() {
+    var dateStr = targetDate();
+    fetch(buildUrl(dateStr))
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) { renderMenu(data, dateStr); })
+      .catch(function (err) {
+        console.error("Nutrislice widget error:", err);
+        renderError("Menu unavailable (see console — likely a CORS block; set up the proxy).");
+      });
+  }
+
+  loadMenu();
+  // Refresh once an hour in case DakBoard keeps the page open across midnight
+  setInterval(loadMenu, 60 * 60 * 1000);
+})();
+</script>
