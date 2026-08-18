@@ -89,13 +89,24 @@ one first instead of re-failing through the dead options every time.
 | `PROXY_URL` | `""` | Worker URL; blank means call Nutrislice directly |
 | `ROLL_OVER_HOUR` | `14` | After this hour (24h), show *tomorrow's* menu. `null` = always today |
 | `DATE_OVERRIDE` | `""` | Pin to one date (`YYYY-MM-DD`) while setting up |
-| `DEBUG_MODE` | `false` | Dump the raw API response — or, on failure, every URL tried and why each failed |
+| `TITLE` | `Lunch Menu` | Heading text; `Today's` / `Tomorrow's` is prefixed automatically |
+| `SHOW_RELATIVE_DAY` | `true` | Prefix the heading with Today's/Tomorrow's |
+| `SHOW_DATE` | `true` | Second heading line with the date being shown |
+| `DATE_STYLE` | `long` | `long` → Tuesday, August 18; `short` → Tue, Aug 18 |
+| `DEBUG_MODE` | `false` | `"items"` lists every row with the fields that decide whether it shows; `true` dumps raw JSON. On failure, either shows every URL tried |
 | `SKIP_CATEGORIES` | milk, condiments | Food categories to hide. `[]` shows everything |
 | `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
-**Setting up? Turn on `DEBUG_MODE` first.** It prints the raw response, which is
-the quickest way to confirm your district/school/menu values are right and to
-see the exact category names your district uses for `SKIP_CATEGORIES`.
+**Something listed that shouldn't be?** Set `DEBUG_MODE = "items"`. It prints
+each row the API returned with its `food_category`, `category`, `menu_id` and
+any flags (`section_title`, `blank_line`, `HIDDEN-by-category`), so you can see
+exactly which field to add to `SKIP_CATEGORIES`. `DEBUG_MODE = true` dumps the
+whole raw response if you need it.
+
+The heading shows which day you're looking at, which matters because
+`ROLL_OVER_HOUR` moves the menu to tomorrow in the afternoon — so the board
+reads "Tomorrow's Lunch Menu / Wednesday, August 19" rather than silently
+showing a different day's food.
 
 ## How it differs from the MealViewer widget
 
