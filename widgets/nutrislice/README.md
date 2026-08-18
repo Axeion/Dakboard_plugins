@@ -97,6 +97,7 @@ one first instead of re-failing through the dead options every time.
 | `DEBUG_MODE` | `false` | `"items"` lists every row with the fields that decide whether it shows; `true` dumps raw JSON. On failure, either shows every URL tried |
 | `SKIP_CATEGORIES` | milk, condiment, beverage | Food categories to hide. `[]` shows everything |
 | `SKIP_UNCATEGORIZED` | `true` | Hide rows with no food category — districts use these as in-list station labels |
+| `SKIP_STATIONS` | `["breakfast"]` | Drop whole stations, matched as case-insensitive substrings of the station name |
 | `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
 **Stuck on "Loading menu…"?** That means the script stopped before it could
@@ -107,10 +108,16 @@ errors and prints them in the block, and says so if it is still on "Loading"
 after 20 seconds.
 
 **Something listed that shouldn't be?** Set `DEBUG_MODE = "items"`. It prints
-each row the API returned with its `food_category`, `category`, `menu_id` and
-any flags (`section_title`, `blank_line`, `HIDDEN-by-category`), so you can see
-exactly which field to add to `SKIP_CATEGORIES`. `DEBUG_MODE = true` dumps the
-whole raw response if you need it.
+each row the API returned with its station, `food_category`, `category` and any
+flags (`section_title`, `HIDDEN-by-category`, `HIDDEN-no-category`,
+`HIDDEN-by-station`), so you can see exactly what to filter on.
+`DEBUG_MODE = true` dumps the whole raw response if you need it.
+
+**Breakfast food in the lunch menu?** Districts commonly publish a breakfast
+station inside the lunch menu, so French Toast Sticks and Scrambled Eggs land
+in with the lunch items. `SKIP_STATIONS` drops whole stations by name and
+defaults to `["breakfast"]`. If the station is named something else, the item
+inspector shows `station=` on every row — add whatever it says.
 
 The heading shows which day you're looking at, which matters because
 `ROLL_OVER_HOUR` moves the menu to tomorrow in the afternoon — so the board

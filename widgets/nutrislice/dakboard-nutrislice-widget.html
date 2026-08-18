@@ -117,6 +117,12 @@
   // district leaves the category blank on food you actually want listed.
   var SKIP_UNCATEGORIZED = true;
 
+  // Stations to drop entirely, matched case-insensitively as substrings of the
+  // station name. A district's lunch menu often carries a breakfast station,
+  // which puts French Toast Sticks and Scrambled Eggs in with the lunch food.
+  // Run DEBUG_MODE = "items" to see the station name on every row.
+  var SKIP_STATIONS = ["breakfast"];
+
   // Station headings ("Deli", "Main Line", ...).
   //   "auto"   - follow the district's own setting, like the Nutrislice site does
   //   "always" - always show them, even ones the district hides
@@ -358,6 +364,34 @@
     ).toLowerCase().trim();
   }
 
+  // Station names live on the heading rows; every other row points back at one
+  // through menu_id. Resolving by menu_id rather than by position keeps this
+  // correct even if a station's rows are not contiguous.
+  function stationNames(items) {
+    var map = {};
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i] || {};
+      if (!(item.is_section_title || item.is_station_header)) continue;
+      var key = String(item.menu_id);
+      if (!map[key]) map[key] = String(item.text || "").trim();
+    }
+    return map;
+  }
+
+  function stationOf(item, names) {
+    return (names && names[String(item.menu_id)]) || "";
+  }
+
+  function isSkippedStation(name) {
+    if (!name) return false;
+    var lower = name.toLowerCase();
+    for (var i = 0; i < SKIP_STATIONS.length; i++) {
+      var pattern = String(SKIP_STATIONS[i]).toLowerCase().replace(/^\s+|\s+$/g, "");
+      if (pattern && lower.indexOf(pattern) !== -1) return true;
+    }
+    return false;
+  }
+
   function isHidden(item) {
     var cat = categoryOf(item);
     if (!cat) return SKIP_UNCATEGORIZED;
@@ -425,6 +459,7 @@
     }
 
     var items = day.menu_items || [];
+    var names = stationNames(items);
     var rows = '<div style="font-size:0.6em; line-height:1.35; opacity:0.9;">';
     rows += '<div style="margin-bottom:6px;">' + escapeHtml(dateStr) + " — " +
             items.length + ' rows</div>';
@@ -439,12 +474,14 @@
       if (isHidden(item)) {
         flags.push(categoryOf(item) ? "HIDDEN-by-category" : "HIDDEN-no-category");
       }
+      var station = stationOf(item, names);
+      if (isSkippedStation(station)) flags.push("HIDDEN-by-station");
 
       rows += '<div style="margin-bottom:4px;">' +
         escapeHtml((food.name || item.text || "(no name)")) +
-        '<div style="opacity:0.65;">food_category=' + escapeHtml(String(food.food_category)) +
+        '<div style="opacity:0.65;">station=' + escapeHtml(station || "(none)") +
+        ' food_category=' + escapeHtml(String(food.food_category)) +
         ' category=' + escapeHtml(String(item.category)) +
-        ' menu_id=' + escapeHtml(String(item.menu_id)) +
         (flags.length ? ' [' + escapeHtml(flags.join(", ")) + ']' : '') +
         '</div></div>';
     }
@@ -473,6 +510,7 @@
     }
 
     var items = day.menu_items || [];
+    var names = stationNames(items);
     var groups = [{ title: "", items: [] }];
     var seen = {};
 
@@ -491,6 +529,7 @@
       }
 
       if (isHidden(item)) continue;
+      if (isSkippedStation(stationOf(item, names))) continue;
 
       var name = nameOf(item);
       if (!name) continue;
