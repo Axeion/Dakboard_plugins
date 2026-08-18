@@ -21,9 +21,11 @@
   lists every school in the district along with its slug.
 
   IF THE MENU NEVER LOADS:
-  Open the browser console. A CORS error means Nutrislice refused the direct
-  browser request -- deploy the companion Cloudflare Worker
-  (nutrislice-proxy-worker.js) and paste its URL into PROXY_URL below.
+  Nutrislice does not send CORS headers, so a plain fetch() is usually refused.
+  The widget handles that automatically by falling back to JSONP, which works
+  for most districts with no extra setup. Only if that also fails do you need
+  the companion Cloudflare Worker (nutrislice-proxy-worker.js) -- deploy it and
+  paste its URL into PROXY_URL below.
 
   TIP: set DEBUG_MODE = true to print the raw API response on screen. That is
   the fastest way to confirm your DISTRICT / SCHOOL_SLUG / MENU_TYPE are right
@@ -148,8 +150,16 @@
     });
   }
 
+  // The transport that worked last time, replayed first on later refreshes so
+  // hourly reloads stop re-failing through the same dead options.
+  var lastGood = null;
+
+  function sameTransport(a, b) {
+    return a && b && a.kind === b.kind && a.host === b.host && a.format === b.format;
+  }
+
   // Ordered list of everything worth trying before giving up.
-  function buildAttempts(dateStr) {
+  function buildAttempts() {
     var hosts = apiHosts();
     var list = [];
     var i;
@@ -157,17 +167,27 @@
     // The proxy already solves CORS, so there is nothing to fall back to.
     if (PROXY_URL) {
       for (i = 0; i < hosts.length; i++) {
-        list.push({ kind: "fetch", url: buildUrl(dateStr, hosts[i], "json") });
+        list.push({ kind: "fetch", host: hosts[i], format: "json" });
       }
-      return list;
+    } else {
+      for (i = 0; i < hosts.length; i++) {
+        list.push({ kind: "fetch", host: hosts[i], format: "json" });
+      }
+      // JSONP sidesteps CORS entirely; Nutrislice has spelled the format both
+      // ways over the years, hence two attempts per host.
+      for (i = 0; i < hosts.length; i++) {
+        list.push({ kind: "jsonp", host: hosts[i], format: "json-p" });
+        list.push({ kind: "jsonp", host: hosts[i], format: "jsonp" });
+      }
     }
 
-    for (i = 0; i < hosts.length; i++) {
-      list.push({ kind: "fetch", url: buildUrl(dateStr, hosts[i], "json") });
-    }
-    for (i = 0; i < hosts.length; i++) {
-      list.push({ kind: "jsonp", url: buildUrl(dateStr, hosts[i], "json-p") });
-      list.push({ kind: "jsonp", url: buildUrl(dateStr, hosts[i], "jsonp") });
+    if (lastGood) {
+      for (i = 0; i < list.length; i++) {
+        if (sameTransport(list[i], lastGood)) {
+          list.unshift(list.splice(i, 1)[0]);
+          break;
+        }
+      }
     }
     return list;
   }
@@ -344,8 +364,13 @@
 
   function loadMenu() {
     var dateStr = targetDate();
-    var attempts = buildAttempts(dateStr);
+    var attempts = buildAttempts();
     var results = [];
+
+    function succeeded(attempt, data) {
+      lastGood = attempt;
+      renderMenu(data, dateStr);
+    }
 
     function tryNext(index) {
       if (index >= attempts.length) {
@@ -356,26 +381,27 @@
       }
 
       var attempt = attempts[index];
+      var url = buildUrl(dateStr, attempt.host, attempt.format);
 
       function failed(detail) {
-        results.push({ url: attempt.url, kind: attempt.kind, error: detail });
+        results.push({ url: url, kind: attempt.kind, error: detail });
         tryNext(index + 1);
       }
 
       if (attempt.kind === "jsonp") {
-        fetchJsonp(attempt.url)
-          .then(function (data) { renderMenu(data, dateStr); })
+        fetchJsonp(url)
+          .then(function (data) { succeeded(attempt, data); })
           .catch(function (err) { failed(String(err && err.message || err)); });
         return;
       }
 
-      fetch(attempt.url)
+      fetch(url)
         .then(function (res) {
           if (!res.ok) {
-            results.push({ url: attempt.url, kind: attempt.kind, status: res.status });
+            results.push({ url: url, kind: attempt.kind, status: res.status });
             return tryNext(index + 1);
           }
-          return res.json().then(function (data) { renderMenu(data, dateStr); });
+          return res.json().then(function (data) { succeeded(attempt, data); });
         })
         .catch(function (err) { failed(String(err && err.message || err)); });
     }

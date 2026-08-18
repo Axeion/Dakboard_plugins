@@ -67,6 +67,14 @@ The Worker only forwards requests to `*.nutrislice.com`, so it isn't an open pro
 When `PROXY_URL` is set the widget goes straight through it and skips the JSONP
 fallback, since the proxy already solves CORS.
 
+Whichever transport succeeds is remembered, so the hourly refresh replays that
+one first instead of re-failing through the dead options every time.
+
+> JSONP works by running a script from Nutrislice's own domain in the page, so
+> you are trusting that domain with the widget. That's a reasonable trade for a
+> school menu on a private dashboard; use the Worker instead if you'd rather
+> only ever receive data.
+
 > Opening an API URL in a browser tab tells you the slug is right, but it does
 > **not** prove CORS works — typing a URL into the address bar isn't a
 > cross-origin request. Only the widget can tell you that.
