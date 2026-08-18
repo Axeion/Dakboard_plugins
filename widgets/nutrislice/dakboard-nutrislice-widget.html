@@ -96,16 +96,17 @@
     return [DISTRICT + ".api.nutrislice.com", DISTRICT + ".nutrislice.com"];
   }
 
-  function menuPath(dateStr) {
+  function menuPath(dateStr, format) {
     var parts = dateStr.split("-");
     // Nutrislice serves a whole week at a time; any date in the week works.
     return "/menu/api/weeks/school/" + encodeURIComponent(SCHOOL_SLUG) +
            "/menu-type/" + encodeURIComponent(MENU_TYPE) +
-           "/" + parts[0] + "/" + parts[1] + "/" + parts[2] + "/?format=json";
+           "/" + parts[0] + "/" + parts[1] + "/" + parts[2] +
+           "/?format=" + encodeURIComponent(format);
   }
 
-  function buildUrl(dateStr, host) {
-    var path = menuPath(dateStr);
+  function buildUrl(dateStr, host, format) {
+    var path = menuPath(dateStr, format);
     if (PROXY_URL) {
       // Proxy forwards ?host= and ?path= to the real Nutrislice endpoint
       return PROXY_URL.replace(/\/$/, "") +
@@ -113,6 +114,62 @@
              "&path=" + encodeURIComponent(path);
     }
     return "https://" + host + path;
+  }
+
+  // A <script> tag isn't subject to CORS, so JSONP gets the menu even when the
+  // browser refuses a plain fetch(). Nutrislice has spelled the format both
+  // "json-p" and "jsonp" over the years, hence the two attempts below.
+  function fetchJsonp(url, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      var cb = "nsCb" + Date.now() + Math.floor(Math.random() * 1e6);
+      var script = document.createElement("script");
+      var timer;
+
+      function cleanup() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[cb] = function (data) { cleanup(); resolve(data); };
+
+      timer = setTimeout(function () {
+        cleanup();
+        reject(new Error("JSONP timed out"));
+      }, timeoutMs || 10000);
+
+      script.onerror = function () {
+        cleanup();
+        reject(new Error("JSONP request failed"));
+      };
+
+      script.src = url + "&callback=" + cb;
+      document.head.appendChild(script);
+    });
+  }
+
+  // Ordered list of everything worth trying before giving up.
+  function buildAttempts(dateStr) {
+    var hosts = apiHosts();
+    var list = [];
+    var i;
+
+    // The proxy already solves CORS, so there is nothing to fall back to.
+    if (PROXY_URL) {
+      for (i = 0; i < hosts.length; i++) {
+        list.push({ kind: "fetch", url: buildUrl(dateStr, hosts[i], "json") });
+      }
+      return list;
+    }
+
+    for (i = 0; i < hosts.length; i++) {
+      list.push({ kind: "fetch", url: buildUrl(dateStr, hosts[i], "json") });
+    }
+    for (i = 0; i < hosts.length; i++) {
+      list.push({ kind: "jsonp", url: buildUrl(dateStr, hosts[i], "json-p") });
+      list.push({ kind: "jsonp", url: buildUrl(dateStr, hosts[i], "jsonp") });
+    }
+    return list;
   }
 
   function escapeHtml(s) {
@@ -147,8 +204,8 @@
       }
       return "Nutrislice returned HTTP " + s + ".";
     }
-    return "Could not reach Nutrislice (CORS block or no network). " +
-           "Deploy the proxy worker and set PROXY_URL.";
+    return "Could not reach Nutrislice — direct and JSONP requests both " +
+           "failed. Deploy the proxy worker and set PROXY_URL.";
   }
 
   function renderDiagnostic(attempts) {
@@ -160,7 +217,7 @@
       var a = attempts[i];
       html += '<div style="margin-bottom:6px;">' +
               '<div style="word-break:break-all;">' + escapeHtml(a.url) + '</div>' +
-              '<div style="opacity:0.7;">&rarr; ' +
+              '<div style="opacity:0.7;">' + escapeHtml(a.kind || "fetch") + ' &rarr; ' +
               escapeHtml(a.status ? "HTTP " + a.status : a.error) + '</div></div>';
     }
     html += '<div style="opacity:0.7;">Open one of those URLs in a browser tab: ' +
@@ -287,33 +344,43 @@
 
   function loadMenu() {
     var dateStr = targetDate();
-    var hosts = apiHosts();
-    var attempts = [];
+    var attempts = buildAttempts(dateStr);
+    var results = [];
 
-    function tryHost(index) {
-      if (index >= hosts.length) {
-        console.error("Nutrislice widget: all attempts failed", attempts);
-        if (DEBUG_MODE) renderDiagnostic(attempts);
-        else renderError(describeFailure(attempts));
+    function tryNext(index) {
+      if (index >= attempts.length) {
+        console.error("Nutrislice widget: all attempts failed", results);
+        if (DEBUG_MODE) renderDiagnostic(results);
+        else renderError(describeFailure(results));
         return;
       }
 
-      var url = buildUrl(dateStr, hosts[index]);
-      fetch(url)
+      var attempt = attempts[index];
+
+      function failed(detail) {
+        results.push({ url: attempt.url, kind: attempt.kind, error: detail });
+        tryNext(index + 1);
+      }
+
+      if (attempt.kind === "jsonp") {
+        fetchJsonp(attempt.url)
+          .then(function (data) { renderMenu(data, dateStr); })
+          .catch(function (err) { failed(String(err && err.message || err)); });
+        return;
+      }
+
+      fetch(attempt.url)
         .then(function (res) {
           if (!res.ok) {
-            attempts.push({ url: url, status: res.status });
-            return tryHost(index + 1);
+            results.push({ url: attempt.url, kind: attempt.kind, status: res.status });
+            return tryNext(index + 1);
           }
           return res.json().then(function (data) { renderMenu(data, dateStr); });
         })
-        .catch(function (err) {
-          attempts.push({ url: url, error: String(err && err.message || err) });
-          tryHost(index + 1);
-        });
+        .catch(function (err) { failed(String(err && err.message || err)); });
     }
 
-    tryHost(0);
+    tryNext(0);
   }
 
   loadMenu();

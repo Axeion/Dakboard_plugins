@@ -43,30 +43,33 @@ https://<DISTRICT>.nutrislice.com/menu/api/schools/?format=json
 
 ### 3. If the menu never loads
 
-The widget tries both Nutrislice host forms (`<district>.nutrislice.com` and
-`<district>.api.nutrislice.com`) before giving up, then tells you which kind of
-failure it hit. Turn on `DEBUG_MODE` to see every URL it tried and the result
-of each:
+The widget works through a fallback chain before giving up:
 
-- **"Could not reach Nutrislice (CORS block or no network)"** — the request never
-  completed, so there was no response to read. Deploy the Worker (below).
-- **"Menu not found (HTTP 404)"** — the connection worked, so CORS is fine and
-  the network is fine. `SCHOOL_SLUG` or `MENU_TYPE` doesn't match. Recheck them
-  against your menu URL.
+1. `fetch()` against `<district>.api.nutrislice.com`, then `<district>.nutrislice.com`.
+2. If those are CORS-blocked, **JSONP** against the same hosts (`?format=json-p`,
+   then `?format=jsonp`). A `<script>` tag isn't subject to CORS, so this often
+   works with no proxy at all.
+3. If everything fails, it tells you so and asks for the proxy.
 
-**Quickest way to tell them apart:** copy one of the URLs the debug view prints
-and open it in a normal browser tab.
+Turn on `DEBUG_MODE` to see every URL tried, whether it went out as `fetch` or
+`jsonp`, and how each one failed.
 
-- Returns JSON → the endpoint is correct and it's a CORS block. Deploy the Worker.
-- Returns a 404 or error page → your slug or menu type is wrong.
+**"Menu not found (HTTP 404)"** means something answered, so the network and CORS
+are fine and your `SCHOOL_SLUG` / `MENU_TYPE` are wrong.
 
-To deploy the proxy Worker:
+**"Could not reach Nutrislice"** means nothing was readable — deploy the Worker:
 
 1. Sign up at [workers.cloudflare.com](https://workers.cloudflare.com) (free tier is plenty).
 2. Create a Worker, paste in `nutrislice-proxy-worker.js`, deploy.
 3. Put the resulting `https://….workers.dev` URL into `PROXY_URL` in the widget.
 
 The Worker only forwards requests to `*.nutrislice.com`, so it isn't an open proxy.
+When `PROXY_URL` is set the widget goes straight through it and skips the JSONP
+fallback, since the proxy already solves CORS.
+
+> Opening an API URL in a browser tab tells you the slug is right, but it does
+> **not** prove CORS works — typing a URL into the address bar isn't a
+> cross-origin request. Only the widget can tell you that.
 
 ## Configuration
 
