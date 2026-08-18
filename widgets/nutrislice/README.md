@@ -80,6 +80,7 @@ The Worker only forwards requests to `*.nutrislice.com`, so it isn't an open pro
 | `DATE_OVERRIDE` | `""` | Pin to one date (`YYYY-MM-DD`) while setting up |
 | `DEBUG_MODE` | `false` | Dump the raw API response — or, on failure, every URL tried and why each failed |
 | `SKIP_CATEGORIES` | milk, condiments | Food categories to hide. `[]` shows everything |
+| `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
 **Setting up? Turn on `DEBUG_MODE` first.** It prints the raw response, which is
 the quickest way to confirm your district/school/menu values are right and to
@@ -94,6 +95,10 @@ see the exact category names your district uses for `SKIP_CATEGORIES`.
   date, so it doesn't drift across timezones.
 - **Sections instead of blocks.** Station headings arrive as menu items flagged
   `is_section_title`, rather than MealViewer's nested `menuBlocks` →
-  `cafeteriaLineList` structure.
+  `cafeteriaLineList` structure. Whether a heading is *meant* to be shown lives
+  separately, in the day's `menu_info` keyed by the item's `menu_id` — districts
+  frequently give stations internal names (`T4-Adventure`) and set
+  `use_section_title: false` to hide them. `SHOW_STATIONS: "auto"` honours that,
+  and uses `display_name` as the label when the district sets one.
 - **Categories instead of item types.** Filtering keys off the food's category
   (`entree`, `milk`, …) rather than MealViewer's `item_Type`.

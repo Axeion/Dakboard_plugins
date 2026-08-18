@@ -63,6 +63,14 @@
   // Food categories to hide (milk cartons, condiments, etc). Matched against
   // each item's food category, case-insensitive. Leave empty to show all.
   var SKIP_CATEGORIES = ["milk", "condiments", "condiment"];
+
+  // Station headings ("Deli", "Main Line", ...).
+  //   "auto"   - follow the district's own setting, like the Nutrislice site does
+  //   "always" - always show them, even ones the district hides
+  //   "never"  - never show them; render one flat list
+  // Districts often name stations internally ("T4-Adventure") and hide them,
+  // so "auto" keeps those off your board.
+  var SHOW_STATIONS = "auto";
   // -----------------------------------------
 
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
@@ -82,9 +90,10 @@
   }
 
   // Nutrislice answers on both of these; which one a district uses varies,
-  // so try them in order before giving up.
+  // so try them in order before giving up. The dedicated api host is the one
+  // that generally answers, so it goes first.
   function apiHosts() {
-    return [DISTRICT + ".nutrislice.com", DISTRICT + ".api.nutrislice.com"];
+    return [DISTRICT + ".api.nutrislice.com", DISTRICT + ".nutrislice.com"];
   }
 
   function menuPath(dateStr) {
@@ -193,6 +202,40 @@
     return null;
   }
 
+  // Each station's heading is configured per menu in the day's menu_info,
+  // keyed by the item's menu_id. Nutrislice's own site honours these, so
+  // "auto" does too rather than exposing internal station names.
+  function sectionTitleFor(day, item) {
+    if (SHOW_STATIONS === "never") return "";
+
+    var info = (day && day.menu_info) || {};
+    var entry = info[String(item.menu_id)] || {};
+    var opts = entry.section_options || {};
+
+    if (SHOW_STATIONS === "auto" && opts.use_section_title === false) return "";
+
+    return String(opts.display_name || item.text || "").trim();
+  }
+
+  function renderGroups(groups) {
+    var html = "";
+    for (var g = 0; g < groups.length; g++) {
+      var group = groups[g];
+      if (!group.items.length) continue;
+      html += '<div style="margin-bottom: 12px;">';
+      if (group.title) {
+        html += '<div style="font-weight:600; opacity:0.8; margin-bottom:4px;">' +
+                escapeHtml(group.title) + '</div>';
+      }
+      html += '<ul style="margin:0; padding-left: 1.2em;">';
+      for (var i = 0; i < group.items.length; i++) {
+        html += "<li>" + escapeHtml(group.items[i]) + "</li>";
+      }
+      html += '</ul></div>';
+    }
+    return html;
+  }
+
   function renderMenu(data, dateStr) {
     if (DEBUG_MODE) {
       setContent('<pre style="white-space: pre-wrap; font-size: 0.55em; line-height:1.3; opacity:0.9;">' +
@@ -208,31 +251,20 @@
     }
 
     var items = day.menu_items || [];
-    var html = "";
-    var sectionHtml = "";
-    var sectionTitle = "";
+    var groups = [{ title: "", items: [] }];
     var seen = {};
-    var foundAnyItem = false;
 
-    function flushSection() {
-      if (!sectionHtml) { sectionTitle = ""; return; }
-      html += '<div style="margin-bottom: 12px;">';
-      if (sectionTitle) {
-        html += '<div style="font-weight:600; opacity:0.8; margin-bottom:4px;">' +
-                escapeHtml(sectionTitle) + '</div>';
-      }
-      html += '<ul style="margin:0; padding-left: 1.2em;">' + sectionHtml + '</ul></div>';
-      sectionHtml = "";
-      sectionTitle = "";
-    }
+    function currentGroup() { return groups[groups.length - 1]; }
 
     for (var i = 0; i < items.length; i++) {
       var item = items[i] || {};
 
-      // Section titles ("Main Line", "Deli", ...) carry no food, just text.
-      if (item.is_section_title) {
-        flushSection();
-        sectionTitle = String(item.text || "").trim();
+      // Station headings carry no food, just text.
+      if (item.is_section_title || item.is_station_header) {
+        var title = sectionTitleFor(day, item);
+        // Hidden headings would otherwise split the list into unlabelled
+        // chunks, so only start a new group when there is a title to show.
+        if (title) groups.push({ title: title, items: [] });
         continue;
       }
 
@@ -246,12 +278,11 @@
       if (seen[key]) continue;
       seen[key] = true;
 
-      sectionHtml += "<li>" + escapeHtml(name) + "</li>";
-      foundAnyItem = true;
+      currentGroup().items.push(name);
     }
-    flushSection();
 
-    setContent(foundAnyItem ? html : "No items listed today.");
+    var html = renderGroups(groups);
+    setContent(html || "No items listed today.");
   }
 
   function loadMenu() {
