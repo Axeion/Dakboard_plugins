@@ -43,6 +43,35 @@
 </div>
 
 <script>
+// Installed first, on purpose: if the main script below fails to parse or throws
+// while reading its CONFIG, the widget would otherwise sit on "Loading menu…"
+// forever with nothing on screen and nothing in the block to explain it.
+(function () {
+  function show(msg) {
+    var el = document.getElementById("ns-content");
+    if (!el) return;
+    el.innerHTML = '<div style="opacity:0.8; font-size:0.7em; line-height:1.4;">' +
+      "Widget error: " +
+      String(msg).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+      "</div>";
+  }
+
+  window.addEventListener("error", function (e) {
+    show((e && e.message) || "script error");
+  });
+
+  // Nothing at all rendered? Say so rather than showing "Loading" indefinitely.
+  setTimeout(function () {
+    var el = document.getElementById("ns-content");
+    if (el && /Loading menu/.test(el.textContent || "")) {
+      show("the script never finished running. Check the CONFIG block — text " +
+           'values need quotes, e.g. DEBUG_MODE = "items", not DEBUG_MODE = items.');
+    }
+  }, 20000);
+})();
+</script>
+
+<script>
 (function () {
   // ---------------- CONFIG ----------------
   var DISTRICT    = "elkhornweb";          // <-- subdomain, e.g. "elkhornweb" in elkhornweb.nutrislice.com
@@ -88,6 +117,18 @@
   // so "auto" keeps those off your board.
   var SHOW_STATIONS = "auto";
   // -----------------------------------------
+
+  // Accepts true, "items", "raw" and the usual near-misses, so a slightly wrong
+  // debug value still does something useful instead of silently doing nothing.
+  function debugMode() {
+    var v = DEBUG_MODE;
+    if (v === true) return "raw";
+    if (typeof v !== "string") return false;
+    var t = v.toLowerCase().replace(/^\s+|\s+$/g, "");
+    if (t === "items" || t === "item" || t === "rows") return "items";
+    if (t === "" || t === "false" || t === "off") return false;
+    return "raw";
+  }
 
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
 
@@ -403,14 +444,14 @@
   }
 
   function renderMenu(data, dateStr) {
-    if (DEBUG_MODE === true) {
+    if (debugMode() === "raw") {
       setContent('<pre style="white-space: pre-wrap; font-size: 0.55em; line-height:1.3; opacity:0.9;">' +
                  escapeHtml(JSON.stringify(data, null, 2)) + '</pre>');
       console.log("Nutrislice raw response:", data);
       return;
     }
 
-    if (DEBUG_MODE === "items") {
+    if (debugMode() === "items") {
       renderItemDebug(data, dateStr);
       return;
     }
@@ -470,7 +511,7 @@
     function tryNext(index) {
       if (index >= attempts.length) {
         console.error("Nutrislice widget: all attempts failed", results);
-        if (DEBUG_MODE) renderDiagnostic(results);
+        if (debugMode()) renderDiagnostic(results);
         else renderError(describeFailure(results));
         return;
       }

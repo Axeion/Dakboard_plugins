@@ -97,6 +97,13 @@ one first instead of re-failing through the dead options every time.
 | `SKIP_CATEGORIES` | milk, condiments | Food categories to hide. `[]` shows everything |
 | `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
+**Stuck on "Loading menu…"?** That means the script stopped before it could
+render anything — almost always a typo in `CONFIG`. Text values need quotes
+(`DEBUG_MODE = "items"`, not `DEBUG_MODE = items`; an unquoted word throws a
+`ReferenceError` that kills the whole script). The widget now catches its own
+errors and prints them in the block, and says so if it is still on "Loading"
+after 20 seconds.
+
 **Something listed that shouldn't be?** Set `DEBUG_MODE = "items"`. It prints
 each row the API returned with its `food_category`, `category`, `menu_id` and
 any flags (`section_title`, `blank_line`, `HIDDEN-by-category`), so you can see
