@@ -111,17 +111,30 @@
                          "beverage", "beverages"];
 
   // Hide rows that carry no food category at all. Districts use these as
-  // in-list station labels ("T4- Grill Baskets", "Fast Takes - Grab & Go
-  // Meals") -- they arrive as ordinary food entries, so nothing else marks
-  // them as headings. Real menu items are categorised. Set false if your
-  // district leaves the category blank on food you actually want listed.
-  var SKIP_UNCATEGORIZED = true;
+  // in-list station labels ("T4- Grill Baskets"), but they also leave the
+  // category blank on the occasional real item -- "Fresh Made Pizza" is one --
+  // so this is off by default and SKIP_ITEMS names the labels instead. Turn it
+  // on if your district labels a lot of stations this way and you would rather
+  // not list them all.
+  var SKIP_UNCATEGORIZED = false;
+
+  // Individual items to hide, matched case-insensitively as substrings of the
+  // item name. The defaults are the in-list station labels Elkhorn uses plus
+  // milk; adjust for your district.
+  var SKIP_ITEMS = ["grill baskets", "garden bar", "grab & go meals",
+                    "sides and toppings", "milk"];
 
   // Stations to drop entirely, matched case-insensitively as substrings of the
-  // station name. A district's lunch menu often carries a breakfast station,
-  // which puts French Toast Sticks and Scrambled Eggs in with the lunch food.
-  // Run DEBUG_MODE = "items" to see the station name on every row.
-  var SKIP_STATIONS = ["breakfast"];
+  // station name, e.g. ["T4-Extras"]. Run DEBUG_MODE = "items" to see the
+  // station name on every row.
+  //
+  // Note: breakfast-looking food in a lunch menu is usually not a stray
+  // breakfast station. Elkhorn serves French Toast Sticks and Scrambled Eggs
+  // at T4-Favorites on breakfast-for-lunch days -- the same station that
+  // serves sandwiches the rest of the week -- so skipping that station would
+  // lose real lunch items. The separate breakfast menu is its own MENU_TYPE
+  // and never appears here.
+  var SKIP_STATIONS = [];
 
   // Station headings ("Deli", "Main Line", ...).
   //   "auto"   - follow the district's own setting, like the Nutrislice site does
@@ -401,6 +414,16 @@
     return false;
   }
 
+  function isSkippedName(name) {
+    if (!name) return false;
+    var lower = name.toLowerCase();
+    for (var i = 0; i < SKIP_ITEMS.length; i++) {
+      var pattern = String(SKIP_ITEMS[i]).toLowerCase().replace(/^\s+|\s+$/g, "");
+      if (pattern && lower.indexOf(pattern) !== -1) return true;
+    }
+    return false;
+  }
+
   function nameOf(item) {
     var food = item.food || {};
     var name = food.name || item.text || "";
@@ -476,6 +499,7 @@
       }
       var station = stationOf(item, names);
       if (isSkippedStation(station)) flags.push("HIDDEN-by-station");
+      if (isSkippedName(food.name || item.text || "")) flags.push("HIDDEN-by-name");
 
       rows += '<div style="margin-bottom:4px;">' +
         escapeHtml((food.name || item.text || "(no name)")) +
@@ -533,6 +557,7 @@
 
       var name = nameOf(item);
       if (!name) continue;
+      if (isSkippedName(name)) continue;
 
       // Districts often repeat the same item across stations.
       var key = name.toLowerCase();

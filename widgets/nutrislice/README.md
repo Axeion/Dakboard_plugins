@@ -96,8 +96,9 @@ one first instead of re-failing through the dead options every time.
 | `DATE_STYLE` | `long` | `long` → Tuesday, August 18; `short` → Tue, Aug 18 |
 | `DEBUG_MODE` | `false` | `"items"` lists every row with the fields that decide whether it shows; `true` dumps raw JSON. On failure, either shows every URL tried |
 | `SKIP_CATEGORIES` | milk, condiment, beverage | Food categories to hide. `[]` shows everything |
-| `SKIP_UNCATEGORIZED` | `true` | Hide rows with no food category — districts use these as in-list station labels |
-| `SKIP_STATIONS` | `["breakfast"]` | Drop whole stations, matched as case-insensitive substrings of the station name |
+| `SKIP_UNCATEGORIZED` | `false` | Hide every row with no food category. Catches station labels but also takes real items like "Fresh Made Pizza" |
+| `SKIP_ITEMS` | station labels, milk | Hide individual items, matched as case-insensitive substrings of the item name |
+| `SKIP_STATIONS` | `[]` | Drop whole stations, matched as case-insensitive substrings of the station name |
 | `SHOW_STATIONS` | `auto` | Station headings: `auto` follows the district's own setting, `always` forces them on, `never` renders one flat list |
 
 **Stuck on "Loading menu…"?** That means the script stopped before it could
@@ -113,11 +114,13 @@ flags (`section_title`, `HIDDEN-by-category`, `HIDDEN-no-category`,
 `HIDDEN-by-station`), so you can see exactly what to filter on.
 `DEBUG_MODE = true` dumps the whole raw response if you need it.
 
-**Breakfast food in the lunch menu?** Districts commonly publish a breakfast
-station inside the lunch menu, so French Toast Sticks and Scrambled Eggs land
-in with the lunch items. `SKIP_STATIONS` drops whole stations by name and
-defaults to `["breakfast"]`. If the station is named something else, the item
-inspector shows `station=` on every row — add whatever it says.
+**Breakfast food in the lunch menu?** Check the Nutrislice site for that day
+before filtering it out. Elkhorn runs breakfast-for-lunch at `T4-Favorites` —
+the same station that serves sandwiches the rest of the week — so it really is
+on the lunch menu, and skipping that station would lose real lunch items on
+other days. The separate breakfast menu is its own `MENU_TYPE` and never
+appears here. If you do want a whole station gone, `SKIP_STATIONS` takes a
+name substring.
 
 The heading shows which day you're looking at, which matters because
 `ROLL_OVER_HOUR` moves the menu to tomorrow in the afternoon — so the board
